@@ -1,5 +1,5 @@
 <?php
-  include('vpos_plugin.php');
+  include('vpos/vpos_plugin.php');
 
   $array_send = array();
   $array_get = array();
