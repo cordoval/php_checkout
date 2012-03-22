@@ -1,5 +1,5 @@
 <?php
-  include('vpos/vpos_plugin.php');
+  include('../vpos/vpos_plugin.php');
 
   $array_send = array();
   $array_get = array();
@@ -37,10 +37,12 @@
 
   if($response){
     $params = "XMLREQ=".$array_get['XMLREQ']."&DIGITALSIGN=".$array_get['DIGITALSIGN']."&SESSIONKEY=".$array_get['SESSIONKEY']."&oid=".$_POST['order_id'];
-    echo "http://bulevarmall.com:8080/checkout/confirm?".$params;
+    echo "http://localhost/checkout/confirm?".$params;
+    #echo "http://bulevarmall.com:8080/checkout/confirm?".$params;
   }
   else{
-    echo "http://bulevarmall.com:8080/checkout?error=1";
+    echo "http://localhost/checkout?error=1";
+    #echo "http://bulevarmall.com:8080/checkout?error=1";
   }
 
 ?>

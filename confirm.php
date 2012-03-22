@@ -1,8 +1,17 @@
 <?php
-  $purchases = json_decode($_POST['products']); //Aqui debe ir la conexion a la db y devolver los registros y eso
+  include('db.php');
+  include('model.php');
+  include('order.php');
+  include('purchase.php');
+  include('product.php');
+
+  $order = Order::find((int)$_GET['oid']);
+
+  $purchases = $order->purchases;
+
   $purchase_amount = 0; //Calcular en funcion de $purchases
   $delivery_amount = 0; //Calcular en funcion de $purchases
-  $total = $purchase_amount + $delivery_amount;
+  $total = $order->total_cost + $delivery_amount;
 ?>
 <!DOCTYPE html>
 <html>
@@ -15,6 +24,29 @@
       font-family: 'Molengo';
       color: #282828;
       font-size: 22px;
+    }
+    table {
+      max-width: 100%;
+      border-collapse: collapse;
+      border-spacing: 0;
+      background-color: transparent;
+    }
+    .products {
+      width: 90%;
+      margin:0 auto;
+    }
+    .products th,
+    .products td {
+      padding: 8px;
+      line-height: 18px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .products th {
+      font-weight: bold;
+    }
+    .products thead th {
+      vertical-align: bottom;
     }
   </style>
   <meta charset="utf-8" />
@@ -54,7 +86,7 @@
           <h2>Check out:</h2>
           <h3>Comprobación de orden</h3>
 
-          <table>
+          <table class="products">
             <thead>
               <tr>
                 <th>Producto</th>
@@ -65,32 +97,32 @@
             <tbody>
               <?php foreach($purchases as $purchase): ?>
                 <tr>
-                  <td><?php echo $purchase->product_name; ?></td>
-                  <td><?php echo $purchase->quantity; ?></td>
-                  <td><?php echo ($purchase->product_price*$purchase->quantity); ?></td>
+                  <td><?php echo $purchase->product->name; ?></td>
+                  <td class="center"><?php echo $purchase->quantity; ?></td>
+                  <td>S/. <?php echo ($purchase->product->price*$purchase->quantity); ?></td>
                 </tr>
               <?php endforeach; ?>
             </tbody>
           </table>
 
           <p id="subtotal">
-            <strong>Subtotal: </strong><?php echo $purchase_amount; ?><br />
-            <strong>Delivery: </strong><?php echo $delivery_amount; ?>
+            <strong>Subtotal: </strong>S/. <?php echo $order->total_cost; ?><br />
+            <strong>Delivery: </strong>S/. <?php echo $delivery_amount; ?>
           </p>
 
           <div id="check_out_total">
             <div class="column" id="total" style="width:50%">
-              <strong>Total: </strong> <?php echo $total; ?>
+              <strong>Total: </strong>S/. <?php echo $total; ?>
             </div>
             <div class="column" id="actions">
               <form name="frmSolicitudPago" action="https://preprod.verifika.com/VPOS/MM/transactionStart20.do" method="post">
                 <input type="hidden" name="IDACQUIRER" value="117" />
                 <input type="hidden" name="IDCOMMERCE" value="5654" />
-                <input type="hidden" name="XMLREQ" value="<?php echo $GET['XMLREQ']; ?>" />
-                <input type="hidden" name="DIGITALSIGN" value="<?php echo $GET['DIGITALSIGN']; ?>" />
-                <input type="hidden" name="SESSIONKEY" value="<?php echo $GET['SESSIONKEY']; ?>" />
-                <input id="checkout_cancel" type="button" />
-                <input id="checkout_submit" name="commit" type="submit" value="Enviar" />
+                <input type="hidden" name="XMLREQ" value="<?php echo $_GET['XMLREQ']; ?>" />
+                <input type="hidden" name="DIGITALSIGN" value="<?php echo $_GET['DIGITALSIGN']; ?>" />
+                <input type="hidden" name="SESSIONKEY" value="<?php echo $_GET['SESSIONKEY']; ?>" />
+                <input id="checkout_cancel" type="button" value="" />
+                <input id="checkout_submit" name="commit" type="submit" value="" />
               </form>
             </div>
           </div>
