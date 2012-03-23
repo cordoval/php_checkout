@@ -11,8 +11,8 @@
     private $defaults = array(
       'server' => 'localhost',
       'user' => 'root',
-      'password' => '',
-      'db_name' => 'boulevard_development'
+      'password' => 'yaraher2',
+      'db_name' => 'boulevard_production'
     );
 
     function Connection(){
